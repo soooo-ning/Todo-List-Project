@@ -18,13 +18,13 @@
 - **Deploy**: AWS EC2
 
 ## 💻 software design
-<img src="/static/img/ia.png" width="100px;" alt=""/>
+<img src="/static/img/ia.png" width="500px;" alt=""/>
 
 ### API 명세서
-<img src="/static/img/api.png" width="100px;" alt=""/>
+<img src="/static/img/api.png" width="500px;" alt=""/>
 
 ### ERD
-<img src="/static/img/erd.png" width="100px;" alt=""/>
+<img src="/static/img/erd.png" width="500px;" alt=""/>
 
 ### 화면 기획서
 <!-- 동영상 캡쳐부분 넣기 -->
