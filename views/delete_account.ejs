@@ -71,6 +71,7 @@
             alert(response.data.message);
 
             localStorage.clear();
+            // res.clearCookie('connect.sid');
             localStorage.removeItem('nickname');
             document.cookie = 'connect.sid=; Path=/; ';
 
