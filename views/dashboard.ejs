@@ -26,9 +26,9 @@
                     id="allProgressBar"
                     class="progress-bar progress-bar-custom progress-bar-animated"
                     role="progressbar"
-                    style="width: 0%"
+                    style="width: 50%"
                   >
-                    0%
+                    50%
                   </div>
                 </div>
               </div>
@@ -54,14 +54,9 @@
               <div class="card-body">
                 <div class="flex_wrap sb">
                   <h5 class="card-title mb0">오늘의 할일</h5>
-                  <a href="/todo/api/write"
-                    ><button
-                      type="button"
-                      class="btn btn-outline-danger btn-sm"
-                    >
-                      추가
-                    </button></a
-                  >
+                  <button type="button" class="btn btn-outline-danger btn-sm">
+                    추가
+                  </button>
                 </div>
                 <ul id="todayTodos" class="flex_wrap mt20"></ul>
               </div>
@@ -365,6 +360,17 @@
           const todosContainer = document.getElementById('todos');
           if (!todosContainer) return;
 
+          // 모든 우선순위 버튼에서 active 클래스 제거
+          document.querySelectorAll('.priority button').forEach((btn) => {
+            btn.classList.remove('active');
+          });
+
+          // 클릭된 버튼에 active 클래스 추가
+          const clickedBtn = document.querySelector(`.priority .${priority}`);
+          if (clickedBtn) {
+            clickedBtn.classList.add('active');
+          }
+
           fetch(`/todo/api/priority/${priority}`)
             .then((response) => {
               if (!response.ok)
@@ -417,9 +423,29 @@
             });
         };
 
+        // 날씨 API
+        const weatherIconMap = {
+          Clear: 'wi-day-sunny',
+          Clouds: 'wi-cloudy',
+          Rain: 'wi-rain',
+          Drizzle: 'wi-sprinkle',
+          Thunderstorm: 'wi-thunderstorm',
+          Snow: 'wi-snow',
+          Mist: 'wi-fog',
+          Smoke: 'wi-smoke',
+          Haze: 'wi-day-haze',
+          Dust: 'wi-dust',
+          Fog: 'wi-fog',
+          Sand: 'wi-sandstorm',
+          Ash: 'wi-volcano',
+          Squall: 'wi-strong-wind',
+          Tornado: 'wi-tornado',
+        };
+
         const fetchWeather = async () => {
           const apiKey = 'da450c832635d5d57538d8acdd43e25f';
           const weatherContainer = document.querySelector('.weather-container');
+          const weatherIcon = document.querySelector('.weather-icon');
 
           try {
             const response = await fetch(
@@ -429,21 +455,26 @@
               throw new Error('날씨 정보를 불러오지 못했습니다.');
 
             const data = await response.json();
+            const weatherMain = data.weather[0].main;
+            const iconClass = weatherIconMap[weatherMain] || 'wi-na';
+
             weatherContainer.innerHTML = `
-              <h2>${data.name}</h2>
-              <p>온도: ${data.main.temp}°C</p>
-              <p>상태: ${data.weather[0].description}</p>
-              <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" />
-            `;
+          <h2>${data.name}</h2>
+          <p>온도: ${data.main.temp}°C</p>
+          <p>상태: ${data.weather[0].description}</p>
+          <i class="wi ${iconClass} weather-icon"></i>
+        `;
           } catch (error) {
-            weatherContainer.innerHTML = `<p>오류: ${error.message}</p>`;
+            weatherContainer.innerHTML = `<p class="error">오류: ${error.message}</p>`;
           }
         };
 
+        // 초기 데이터 로드
+        handleTodoClick();
         fetchTodayTodos();
         fetchWeeklyTodos();
-        fetchPriorityTodos('high');
-        fetchWeather();
+        fetchPriorityTodos('high'); // 페이지 로드 시 '상' 우선순위 데이터 로드
+        window.onload = fetchWeather;
       });
     </script>
   </body>

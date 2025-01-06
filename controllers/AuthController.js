@@ -1,22 +1,21 @@
-const { User } = require('../models'); // User 모델 가져오기
+const { User } = require('../models');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const bcrypt = require('bcrypt'); // bcrypt 모듈 가져오기
 
 // 로그인 페이지 요청
 exports.getSignIn = (req, res) => {
-  res.render('sign-in'); // 로그인 페이지 렌더링
+  res.render('sign-in');
 };
 
 // 회원가입 페이지 요청
 exports.getSignUp = (req, res) => {
-  res.render('sign-up'); // 회원가입 페이지 렌더링
+  res.render('sign-up');
 };
 
 // 비밀번호 찾기 페이지 요청
 exports.getSearchPw = (req, res) => {
-  res.render('search-pw'); // 비밀번호 찾기 페이지 렌더링
+  res.render('search-pw');
 };
 
 // 로그인 메서드
@@ -29,7 +28,6 @@ exports.signIn = async (req, res) => {
       return res.status(401).json({ message: '로그인 실패' });
     }
 
-    // 입력한 비밀번호와 저장된 비밀번호 비교
     if (pw !== user.pw) {
       return res.status(401).json({ message: '로그인 실패' });
     }
@@ -38,14 +36,12 @@ exports.signIn = async (req, res) => {
       expiresIn: '24h',
     });
 
-    // 세션에 사용자 정보 저장
     req.session.user = {
       id: user.id,
       nickname: user.nickname,
       email: user.email,
     };
 
-    // 닉네임과 함께 토큰을 반환
     res.json({ token, nickname: user.nickname });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -73,12 +69,7 @@ exports.signUp = async (req, res) => {
       return res.status(400).json({ message: '이미 존재하는 이메일입니다.' });
     }
 
-    const newUser = await User.create({
-      nickname,
-      pw, // 비밀번호를 해시화하지 않고 그대로 저장
-      email,
-      profile_image: null,
-    });
+    await User.create({ nickname, pw, email, profile_image: null });
     res.status(201).json({ message: '유저 등록 완료' });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -103,31 +94,20 @@ exports.duplicatedEmail = async (req, res) => {
 
 // 비밀번호 찾기 요청 메서드
 exports.searchPw = async (req, res) => {
-  const { email } = req.query; // req.body 대신 req.query 사용
-
-  console.log('이메일:', email); // 이메일 값 로그
+  const { email } = req.query;
 
   try {
-    // 입력한 이메일로 사용자 찾기
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).render('404'); // 404 페이지로 리다이렉트
+      return res.status(404).render('404');
     }
 
-    // 임시 비밀번호 생성 (4자리)
-    const tempPassword = crypto.randomBytes(2).toString('hex'); // 4자리 임시 비밀번호 생성
-
-    // 임시 비밀번호를 데이터베이스에 저장 (해시화하지 않음)
-    user.pw = tempPassword; // 임시 비밀번호로 업데이트
+    const tempPassword = crypto.randomBytes(2).toString('hex');
+    user.pw = tempPassword;
     await user.save();
 
-    // 임시 비밀번호를 콘솔에 출력하거나 다른 방법으로 사용자에게 제공 (예: API 응답으로 반환)
-    console.log('임시 비밀번호:', tempPassword);
-
-    // 결과 반환 (임시 비밀번호를 클라이언트에 반환)
-    res.status(200).json({ success: true, tempPassword }); // 응답으로 임시 비밀번호 반환
+    res.status(200).json({ success: true, tempPassword });
   } catch (err) {
-    console.error(err); // 오류 로그
     return res.status(500).json({ error: err.message });
   }
 };
@@ -137,20 +117,18 @@ exports.resetPw = async (req, res) => {
   const { newPassword } = req.body;
 
   try {
-    const user = await User.findByPk(req.user.id); // 사용자 ID로 사용자 조회
+    const user = await User.findByPk(req.user.id);
     if (!user) {
       return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
     }
 
-    // 새 비밀번호 직접 저장 (암호화 없이)
-    user.pw = newPassword; // 새 비밀번호로 업데이트
+    user.pw = newPassword;
     await user.save();
 
     res
       .status(200)
       .json({ message: '비밀번호가 성공적으로 재설정되었습니다.' });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
   }
 };
@@ -162,29 +140,24 @@ exports.signInGoogle = passport.authenticate('google', {
 
 // Google OAuth 콜백
 exports.googleCallback = (req, res, next) => {
-  passport.authenticate('google', (err, user, info) => {
+  passport.authenticate('google', (err, user) => {
     if (err) {
-      console.error('Authentication Error:', err);
-      return res.redirect('/'); // 로그인 페이지로 리다이렉트
+      return res.redirect('/');
     }
     if (!user) {
-      console.log('No user found');
-      return res.redirect('/'); // 사용자 없을 경우 로그인 페이지로 리다이렉트
+      return res.redirect('/');
     }
     req.logIn(user, (loginErr) => {
       if (loginErr) {
-        console.error('Login Error:', loginErr);
-        return res.redirect('/'); // 로그인 실패 시 리다이렉트
+        return res.redirect('/');
       }
 
-      // 로그인 성공 후 사용자 정보를 세션에 저장
       req.session.user = {
         id: user.id,
         nickname: user.nickname,
         email: user.email,
       };
 
-      console.log('Session after Google login:', req.session); // 세션 로그 출력
       return res.redirect('/todo/dashboard');
     });
   })(req, res, next);
@@ -192,49 +165,25 @@ exports.googleCallback = (req, res, next) => {
 
 // Kakao OAuth 콜백
 exports.kakaoCallback = (req, res, next) => {
-  console.log('Kakao OAuth callback initiated'); // 콜백 시작 로그
-
-  passport.authenticate('kakao', (err, user, info) => {
+  passport.authenticate('kakao', (err, user) => {
     if (err) {
-      console.error('Authentication error:', err); // 인증 오류 로그
-      return res
-        .status(500)
-        .json({ message: 'Authentication failed', error: err }); // 에러 응답
+      return res.redirect('/login');
     }
-
-    if (user) {
-      console.log('User authenticated:', user); // 인증된 사용자 정보 로그
-
-      req.logIn(user, (loginErr) => {
-        if (loginErr) {
-          console.error('Login error:', loginErr); // 로그인 오류 로그
-          return res
-            .status(500)
-            .json({ message: 'Login failed', error: loginErr }); // 에러 응답
-        }
-
-        // 로그인 성공 후 사용자 정보를 세션에 저장
-        req.session.user = {
-          id: user.id,
-          nickname: user.nickname,
-          email: user.email,
-        };
-
-        console.log('User logged in, redirecting to /todo/dashboard'); // 로그인 성공 로그
-        return res.redirect('/todo/dashboard'); // 대시보드로 리다이렉트
-      });
-    } else {
-      console.log('No user found, redirecting to /404'); // 사용자 없음 로그
-      return res.redirect('/404'); // 사용자 없음 처리
+    if (!user) {
+      return res.redirect('/login');
     }
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        return res.redirect('/login');
+      }
+
+      req.session.user = {
+        id: user.id,
+        nickname: user.nickname,
+        email: user.email,
+      };
+
+      return res.redirect('/todo/dashboard');
+    });
   })(req, res, next);
-};
-
-// 세션 정보 확인 API
-exports.getSessionInfo = (req, res) => {
-  if (req.session.user) {
-    res.json({ user: req.session.user });
-  } else {
-    res.status(401).json({ message: '로그인하지 않았습니다.' });
-  }
 };

@@ -1,29 +1,43 @@
 # 📄 Todo Checkk
 
-간결함과 직관성을 최우선으로 한 투두리스트 웹사이트!
+간결함과 직관성을 최우선으로 한 투두리스트 웹사이트! <br>
 사용자 중심적인 설계를 통해 불편함을 최소화하고, 할 일 관리에 충실한 서비스를 제공합니다.
 
-> 👉 http://127.0.0.1:8080/ ✨배포중✨
+> 👉 http://43.200.254.250:8080/ ✨배포종료✨
 
 <!-- ![](https://user-images.png) 메인 이미지 추가 -->
+<br>
+
+## 🗓️ project period
+2024.12.16 ~ 2024. 12.30
+<br>
+<br>
 
 ## 🔧 Stack
 
 <img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"/><img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white"/><img src="https://img.shields.io/badge/Sequelize-52B0E7?style=flat-square&logo=sequelize&logoColor=white"/><img src="https://img.shields.io/badge/EJS-B4CA65?style=flat-square&logo=ejs&logoColor=white"/>
+<br>
 
 - **Language**: JavaScript
 - **Library & Framework** : Node.js
 - **Database** : MySQL
 - **ORM** : Sequelize
 - **Deploy**: AWS EC2
+<br>
 
 ## 💻 software design
+### 메뉴 구조도
+<img src="/static/img/ia.png" width="1500px;" alt=""/>
+<br>
 
 ### API 명세서
-
-### 화면 기획서
+<img src="/static/img/api.png" width="800px;" alt=""/>
+<br>
 
 ### ERD
+<img src="/static/img/erd.png" width="1500px;" alt=""/>
+<br>
+<br>
 
 ## ⭐ Main Feature
 
@@ -31,24 +45,34 @@
 
 - 이메일 회원가입을 통한 JWT 토큰 발급 로그인
 - Oauth2를 활용한 kakao, goole session 로그인
+- <!-- 동영상 캡쳐부분 넣기 -->
+<br>
 
 ### 투두리스트
 
 - 투두리스트 생성 및 캘린더, 키워드, 검색 조회
 - soft delete를 활용한 삭제 게시물 복구 기능
+- <!-- 동영상 캡쳐부분 넣기 -->
+<br>
 
 ### 마이페이지
 
 - 마이페이지 데이터 수정
 - multer를 활용한 파일 업로드 기능
+- <!-- 동영상 캡쳐부분 넣기 -->
+<br>
 
 ### UI/UX
 
 - 디스플레이 모드 기능 (다크모드, 라이트모드)
+- <!-- 동영상 캡쳐부분 넣기 -->
+<br>
+<br>
 
 ## 💻 Getting Started
 
-(↑해당 프로젝트 설치 및 실행 방법)
+> 해당 프로젝트 설치 및 실행 방법
+<br>
 
 ### Installation
 
@@ -67,6 +91,8 @@ npm run dev
 ```
 npm run start
 ```
+<br>
+<br>
 
 ## :open_file_folder: Project Structure
 
@@ -89,6 +115,8 @@ src
 └── views
    └── include
 ```
+<br>
+<br>
 
 ## 👨‍👩‍👧‍👦 Developer
 
@@ -104,6 +132,8 @@ src
     </tr>
   </tbody>
 </table>
+<br>
+<br>
 
 ## 👨‍💻 Role & Contribution
 
