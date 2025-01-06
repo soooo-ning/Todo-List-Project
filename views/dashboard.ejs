@@ -136,6 +136,10 @@
           }
 
           const todo = response.data.data;
+
+          window.currentTodoId = todoId;
+          console.log('Todo ID set in handleTodoClick:', todoId);
+
           const detailPopup = document.querySelector('.detail-popup');
           if (!detailPopup) {
             console.error('Detail popup element not found');
@@ -144,10 +148,8 @@
 
           const detailForm = document.forms['form-todo-detail'];
 
-          detailForm.querySelector('input[name="todoTitle"]').value =
-            todo.title || '';
-          detailForm.querySelector('input[name="todoDate"]').value =
-            todo.date || '';
+          detailForm.elements['todoTitle'].value = todo.title || '';
+          detailForm.elements['todoDate'].value = todo.date || '';
 
           const priorityInput = detailForm.querySelector(
             `input[name="priority"][value="${todo.priority}"]`,
@@ -171,21 +173,25 @@
               const li = document.createElement('li');
               li.dataset.contentId = content.id;
               li.innerHTML = `
-                      <input type="checkbox" ${
-                        content.state ? 'checked' : ''
-                      } disabled>
-                      <input type="text" name="todoCon" value="${
-                        content.content || ''
-                      }" disabled>
-                    `;
+                    <label>
+                        <input type="checkbox" name="todoChk" ${
+                          content.state ? 'checked' : ''
+                        } disabled>
+                        <input type="text" name="todoCon" value="${
+                          content.content || ''
+                        }" disabled>
+                    </label>
+                `;
               todoContentList.appendChild(li);
             });
           } else {
             const li = document.createElement('li');
             li.innerHTML = `
-                    <input type="checkbox" disabled>
+                <label>
+                    <input type="checkbox" name="todoChk" disabled>
                     <input type="text" name="todoCon" value="내용 없음" disabled>
-                  `;
+                </label>
+            `;
             todoContentList.appendChild(li);
           }
 
@@ -470,7 +476,6 @@
         };
 
         // 초기 데이터 로드
-        handleTodoClick();
         fetchTodayTodos();
         fetchWeeklyTodos();
         fetchPriorityTodos('high'); // 페이지 로드 시 '상' 우선순위 데이터 로드
