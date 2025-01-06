@@ -18,25 +18,11 @@ const loadUserData = async (req, res, next) => {
       '/auth/search-pw', // 비밀번호 찾기 페이지
       '/auth/api/search-pw', // 비밀번호 찾기 API
     ];
+
     if (publicRoutes.includes(req.path)) {
       return next();
     }
     let userId = null;
-
-    // 디버깅용 로그 추가
-    // console.log('Session data:', req.session);
-
-    // JWT 토큰에서 userId 추출
-    // const token = localStorage.getItem('token');
-    // console.log('token>>>', token);
-    // if (token) {
-    //   try {
-    //     const decoded = jwt.verify(token, 'your_jwt_secret');
-    //     userId = decoded.id;
-    //   } catch (err) {
-    //     console.error('JWT Verification Error:', err.message);
-    //   }
-    // }
 
     // 세션에서 userId 추출
     if (!userId && req.session.user) {
