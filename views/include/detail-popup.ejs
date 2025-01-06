@@ -77,7 +77,6 @@
 <script>
   let currentTodoId = null;
   let isEditMode = false;
-  let detailPopup = null;
   let detailForm = null;
   let todoEditBtn = null;
   let todoSubmitBtn = null;
@@ -86,67 +85,12 @@
   let dateInput = null;
   let calendarPopup = null;
 
-  // 팝업 열기
-  async function openTodoDetail(todoId) {
-    if (!todoId) {
-      console.error('Invalid todo ID');
-      return;
-    }
-
-    try {
-      showLoading();
-      const response = await axios.get(`/todo/api/detail/${todoId}`);
-      currentTodoId = todoId;
-
-      if (detailPopup) {
-        populateForm(response.data.data);
-        detailPopup.classList.add('on');
-        document.querySelector('body')?.classList.add('pop_open');
-      }
-    } catch (error) {
-      console.error('Todo 정보를 불러오는데 실패했습니다.', error);
-      alert('Todo 정보를 불러오는데 실패했습니다.');
-    } finally {
-      hideLoading();
-    }
-  }
-
-  // 폼에 데이터 채우기
-  function populateForm(data) {
-    if (!detailForm) return;
-
-    const titleInput = detailForm.querySelector('[name="todoTitle"]');
-    const dateInput = detailForm.querySelector('[name="todoDate"]');
-    const priorityInput = detailForm.querySelector(
-      `[name="priority"][value="${data.priority}"]`,
-    );
-    const keywordSelect = detailForm.querySelector('[name="todoKey"]');
-
-    if (titleInput) titleInput.value = data.title || '';
-    if (dateInput)
-      dateInput.value = data.date
-        ? new Date(data.date).toISOString().split('T')[0]
-        : '';
-    if (priorityInput) priorityInput.checked = true;
-    if (keywordSelect) keywordSelect.value = data.keyword_id || '';
-
-    const todoContentList = detailForm.querySelector('.todo_content');
-
-    if (todoContentList) {
-      todoContentList.innerHTML = '';
-      if (data.todo_contents && data.todo_contents.length > 0) {
-        data.todo_contents.forEach((content) => {
-          addContentItem(content);
-        });
-      } else {
-        addContentItem();
-      }
-      updateDeleteButtons();
-    }
-  }
-
   // 내용 항목 추가
   function addContentItem(content = { id: null, content: '', state: false }) {
+    if (window.currentTodoId) {
+      currentTodoId = window.currentTodoId;
+    }
+
     const todoContentList = detailForm.querySelector('.todo_content');
     if (!todoContentList) return;
 
@@ -161,13 +105,12 @@
             content.content || '',
           )}"
           placeholder="할일을 입력하세요" ${isEditMode ? '' : 'disabled'}>
-          <input type="button" class="delete-content" value="delete" style="display: none">
+          <button type="button" class="delete-content" style="display: none">delete</button>
         </label>
     `;
     todoContentList.appendChild(li);
 
     const deleteBtn = li.querySelector('.delete-content');
-
     if (deleteBtn) {
       deleteBtn.addEventListener('click', () => {
         if (todoContentList.children.length > 1) {
@@ -189,11 +132,19 @@
 
     const listItems = todoContentList.querySelectorAll('li');
     const deleteButtons = todoContentList.querySelectorAll('.delete-content');
-    const shouldShow = isEditMode && listItems.length > 1;
+    const shouldShow = isEditMode; // 수정모드일 때는 항상 삭제 버튼 표시
 
     deleteButtons.forEach((btn) => {
       btn.style.display = shouldShow ? 'inline-block' : 'none';
     });
+
+    // 마지막 하나의 항목만 남았을 때는 삭제 버튼 숨기기
+    if (listItems.length === 1) {
+      const lastDeleteButton = listItems[0].querySelector('.delete-content');
+      if (lastDeleteButton) {
+        lastDeleteButton.style.display = 'none';
+      }
+    }
   }
 
   // 폼 초기화 함수
@@ -217,6 +168,8 @@
   // 수정 가능/불가능 토글
   function enableFormEditing(enabled) {
     if (!detailForm) return;
+
+    isEditMode = enabled;
 
     const formElements = detailForm.elements;
     for (let element of formElements) {
@@ -255,193 +208,9 @@
       .replace(/'/g, '&#039;');
   }
 
-  // 로딩 표시
-  function showLoading() {
-    if (!detailPopup) return;
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'loading';
-    loadingDiv.innerHTML = '로딩 중...';
-    detailPopup.appendChild(loadingDiv);
-  }
-
-  // 로딩 숨기기
-  function hideLoading() {
-    const loadingDiv = detailPopup?.querySelector('.loading');
-    if (loadingDiv) loadingDiv.remove();
-  }
-
-  // 에러 처리
-  function handleError(message, error) {
-    console.error(message, error);
-    alert(message);
-  }
-
-  // 수정 모드 진입 핸들러
-  function handleEdit() {
-    isEditMode = true;
-    if (todoEditBtn) todoEditBtn.style.display = 'none';
-    if (todoSubmitBtn) todoSubmitBtn.style.display = 'inline-block';
-
-    enableFormEditing(true);
-    updateDeleteButtons();
-  }
-
-  // 수정 제출 핸들러
-  async function handleSubmit(event) {
-    event.preventDefault();
-
-    if (!currentTodoId) {
-      alert('Todo 정보를 찾을 수 없습니다.');
-      return;
-    }
-
-    // 폼 데이터 수집
-    const todoTitle = detailForm
-      .querySelector("input[name='todoTitle']")
-      .value.trim();
-    const todoDate = detailForm
-      .querySelector("input[name='todoDate']")
-      .value.trim();
-    const todoPriorityElem = detailForm.querySelector(
-      "input[name='priority']:checked",
-    );
-    const todoKey =
-      detailForm.querySelector("select[name='todoKey']").value || null;
-
-    // 폼 검증
-    if (!todoTitle) {
-      alert('제목을 입력해주세요.');
-      return;
-    }
-    if (!todoDate) {
-      alert('날짜를 선택해주세요.');
-      return;
-    }
-    if (!todoPriorityElem) {
-      alert('우선순위를 선택해주세요.');
-      return;
-    }
-
-    // API 요청 데이터 구성
-    const formData = {
-      id: currentTodoId,
-      keyword_id: todoKey,
-      title: todoTitle,
-      priority: todoPriorityElem.value,
-      date: todoDate,
-      contents: Array.from(detailForm.querySelectorAll('.todo_content li'))
-        .map((li) => ({
-          id: li.dataset.contentId || null,
-          content: li.querySelector('input[name="todoCon"]').value.trim(),
-          state: li.querySelector('input[type="checkbox"]').checked,
-        }))
-        .filter((content) => content.content !== ''),
-    };
-
-    try {
-      const response = await axios.patch('/todo/api/edit', formData);
-      alert('Todo가 성공적으로 수정되었습니다.');
-      detailPopup.classList.remove('on');
-      document.querySelector('body').classList.remove('pop_open');
-      window.location.reload();
-    } catch (error) {
-      console.error('Todo 수정 실패:', error);
-      alert('Todo 수정 중 오류가 발생했습니다.');
-    }
-  }
-
-  // 삭제 핸들러
-  async function handleDelete() {
-    if (!currentTodoId) {
-      console.error('No todo ID found');
-      alert('Todo 정보를 찾을 수 없습니다.');
-      return;
-    }
-
-    if (confirm('정말 삭제하시겠습니까?')) {
-      try {
-        const response = await axios.delete('/todo/api/delete', {
-          data: { id: currentTodoId },
-        });
-
-        if (response.data.status === 'success') {
-          alert('삭제되었습니다.');
-          if (detailPopup) {
-            detailPopup.classList.remove('on');
-            document.querySelector('body')?.classList.remove('pop_open');
-          }
-          window.location.reload();
-        }
-      } catch (error) {
-        console.error('Todo 삭제 실패:', error);
-        alert(error.response?.data?.message || '삭제에 실패했습니다.');
-      }
-    }
-  }
-
-  // 달력 생성 함수
-  function generateCalendar() {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-
-    let html = `<div><strong>${monthNames[currentMonth]} ${currentYear}</strong></div>`;
-    html += '<table><tr>';
-    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach((day) => {
-      html += `<th>${day}</th>`;
-    });
-    html += '</tr><tr>';
-
-    for (let i = 0; i < firstDay; i++) {
-      html += '<td></td>';
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(currentYear, currentMonth, day);
-      const dateString = date.toISOString().split('T')[0];
-      const isDisabled = date < new Date(today.setHours(0, 0, 0, 0));
-
-      html += `
-            <td data-date="${dateString}" ${
-        isDisabled ? 'class="disabled"' : ''
-      }
-                style="cursor: ${isDisabled ? 'not-allowed' : 'pointer'}">
-                ${day}
-            </td>
-        `;
-
-      if ((day + firstDay) % 7 === 0) {
-        html += '</tr><tr>';
-      }
-    }
-
-    html += '</tr></table>';
-    calendarPopup.innerHTML = html;
-  }
-
-  // window 객체에 함수 할당
-  window.openTodoDetail = openTodoDetail;
-
   // DOM 로드 완료 시 초기화
   document.addEventListener('DOMContentLoaded', () => {
     // DOM 요소 초기화
-    detailPopup = document.querySelector('.detail-popup');
     detailForm = document.forms['form-todo-detail'];
     todoEditBtn = document.getElementById('todoEdit');
     todoSubmitBtn = document.getElementById('todoSubmit');
@@ -452,7 +221,14 @@
 
     // 이벤트 리스너 설정
     if (todoEditBtn) {
-      todoEditBtn.addEventListener('click', handleEdit);
+      todoEditBtn.addEventListener('click', () => {
+        isEditMode = true;
+        if (todoEditBtn) todoEditBtn.style.display = 'none';
+        if (todoSubmitBtn) todoSubmitBtn.style.display = 'inline-block';
+
+        enableFormEditing(true);
+        updateDeleteButtons();
+      });
     }
 
     // 수정 제출 핸들러
@@ -460,15 +236,13 @@
       todoSubmitBtn.addEventListener('click', async (event) => {
         event.preventDefault();
 
-        const todoId = window.currentTodoId;
-
-        if (!todoId) {
+        if (!currentTodoId) {
           alert('Todo 정보를 찾을 수 없습니다.');
           return;
         }
 
         const formData = {
-          id: todoId,
+          id: currentTodoId,
           keyword_id:
             detailForm.querySelector('[name="todoKey"]').value || null,
           title: detailForm.querySelector('[name="todoTitle"]').value.trim(),
@@ -498,9 +272,7 @@
     // 삭제 버튼 클릭 이벤트
     if (todoDeleteBtn) {
       todoDeleteBtn.addEventListener('click', async () => {
-        const todoId = window.currentTodoId;
-
-        if (!todoId) {
+        if (!currentTodoId) {
           console.error('No todo ID found');
           alert('Todo 정보를 찾을 수 없습니다.');
           return;
@@ -509,12 +281,12 @@
         if (confirm('정말 삭제하시겠습니까?')) {
           try {
             const response = await axios.delete('/todo/api/delete', {
-              data: { id: todoId },
+              data: { id: currentTodoId },
             });
 
             if (response.data.status === 'success') {
               alert('삭제되었습니다.');
-              detailPopup.classList.remove('on');
+              document.querySelector('.detail-popup').classList.remove('on');
               document.querySelector('body').classList.remove('pop_open');
               window.location.reload();
             }
@@ -527,10 +299,10 @@
     }
 
     // 팝업 닫기 버튼 이벤트
-    const detailPopClose = detailPopup?.querySelector('.pop_close');
+    const detailPopClose = document.querySelector('.detail-popup .pop_close');
     if (detailPopClose) {
       detailPopClose.addEventListener('click', () => {
-        detailPopup.classList.remove('on');
+        document.querySelector('.detail-popup').classList.remove('on');
         document.querySelector('body')?.classList.remove('pop_open');
         resetDetailForm();
       });

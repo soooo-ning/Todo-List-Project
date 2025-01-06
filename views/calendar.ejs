@@ -45,6 +45,16 @@
       let currentDate = new Date();
       let monthTodos = [];
 
+      function escapeHtml(string) {
+        if (!string) return '';
+        return string
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
       async function renderCalendar() {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -168,6 +178,7 @@
       });
 
       renderCalendar();
+
       window.handleTodoClick = async function (todoId) {
         if (!todoId) {
           console.error('Todo ID is required');
@@ -183,11 +194,11 @@
           }
 
           window.currentTodoId = todoId;
-          console.log('Todo ID set in handleTodoClick:', todoId);
 
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
+          // 기본 정보 설정
           detailForm.elements['todoTitle'].value = todo.title || '';
           detailForm.elements['todoDate'].value = todo.date || '';
 
@@ -199,36 +210,19 @@
           const keywordSelect = detailForm.elements['todoKey'];
           if (keywordSelect) keywordSelect.value = todo.keyword_id || '';
 
+          // todo 내용 리스트 초기화 및 추가
           const todoContentList = detailForm.querySelector('.todo_content');
           todoContentList.innerHTML = '';
 
           if (todo.todo_contents && todo.todo_contents.length > 0) {
             todo.todo_contents.forEach((content) => {
-              const li = document.createElement('li');
-              li.dataset.contentId = content.id;
-              li.innerHTML = `
-                    <label>
-                        <input type="checkbox" name="todoChk" ${
-                          content.state ? 'checked' : ''
-                        } disabled>
-                        <input type="text" name="todoCon" value="${
-                          content.content || ''
-                        }" disabled>
-                    </label>
-                `;
-              todoContentList.appendChild(li);
+              addContentItem(content);
             });
           } else {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <label>
-                    <input type="checkbox" name="todoChk" disabled>
-                    <input type="text" name="todoCon" value="내용 없음" disabled>
-                </label>
-            `;
-            todoContentList.appendChild(li);
+            addContentItem({ content: '내용 없음', state: false });
           }
 
+          // 팝업 표시
           detailPopup.classList.add('on');
           document.body.classList.add('pop_open');
         } catch (error) {

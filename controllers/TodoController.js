@@ -72,6 +72,7 @@ exports.editTodo = async (req, res) => {
   try {
     const { id, keyword_id, title, priority, date, contents } = req.body;
 
+    // 1. Todo 기본 정보 업데이트
     const [updated] = await Todo.update(
       {
         keyword_id,
@@ -87,24 +88,52 @@ exports.editTodo = async (req, res) => {
       return notFound(res, null, 'Todo를 찾을 수 없습니다.');
     }
 
-    if (contents) {
-      const contentsArray = Array.isArray(contents) ? contents : [contents];
+    // 2. 현재 존재하는 모든 content 가져오기
+    const existingContents = await TodoContent.findAll({
+      where: { todo_id: id },
+      attributes: ['id'],
+    });
 
-      for (const content of contentsArray) {
-        const { id: contentId, content: text, state } = content;
+    // 3. 전송된 contents의 ID만 추출
+    const receivedContentIds = contents
+      .filter((content) => content.id)
+      .map((content) => Number(content.id));
 
-        if (contentId) {
-          await TodoContent.update(
-            { content: text, state: state === 'true' },
-            { where: { id: contentId, todo_id: id } },
-          );
-        } else {
-          await TodoContent.create({
-            todo_id: id,
+    // 4. 삭제해야 할 content 찾기 (현재 DOM에 없는 content)
+    const contentIdsToDelete = existingContents
+      .map((content) => content.id)
+      .filter((existingId) => !receivedContentIds.includes(existingId));
+
+    // 5. 삭제된 content 제거
+    if (contentIdsToDelete.length > 0) {
+      await TodoContent.destroy({
+        where: {
+          id: contentIdsToDelete,
+          todo_id: id,
+        },
+      });
+    }
+
+    // 6. 남은 content 업데이트 및 새 content 추가
+    for (const content of contents) {
+      const { id: contentId, content: text, state } = content;
+
+      if (contentId) {
+        // 기존 content 업데이트
+        await TodoContent.update(
+          {
             content: text,
-            state: state === 'true',
-          });
-        }
+            state: Boolean(state),
+          },
+          { where: { id: contentId, todo_id: id } },
+        );
+      } else if (text.trim()) {
+        // 새 content 추가
+        await TodoContent.create({
+          todo_id: id,
+          content: text,
+          state: Boolean(state),
+        });
       }
     }
 
@@ -206,6 +235,12 @@ exports.weekTodos = async (req, res) => {
         },
       },
       attributes: ['id', 'title', 'date'],
+      include: [
+        {
+          model: TodoContent,
+          attributes: ['content', 'state'],
+        },
+      ],
       order: [['date', 'ASC']],
       raw: false,
     });
