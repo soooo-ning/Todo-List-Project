@@ -9,6 +9,7 @@
 <br>
 
 ## 🗓️ project period
+
 2024.12.16 ~ 2024. 12.30
 <br>
 <br>
@@ -23,18 +24,22 @@
 - **Database** : MySQL
 - **ORM** : Sequelize
 - **Deploy**: AWS EC2
-<br>
+  <br>
 
 ## 💻 software design
+
 ### 메뉴 구조도
+
 <img src="/static/img/ia.png" width="1500px;" alt=""/>
 <br>
 
 ### API 명세서
+
 <img src="/static/img/api.png" width="800px;" alt=""/>
 <br>
 
 ### ERD
+
 <img src="/static/img/erd.png" width="1500px;" alt=""/>
 <br>
 <br>
@@ -72,7 +77,7 @@
 ## 💻 Getting Started
 
 > 해당 프로젝트 설치 및 실행 방법
-<br>
+> <br>
 
 ### Installation
 
@@ -91,6 +96,7 @@ npm run dev
 ```
 npm run start
 ```
+
 <br>
 <br>
 
@@ -109,12 +115,12 @@ src
 │   ├── css
 │   ├── font
 │   ├── img
-│   ├── js
 │   └── uploads
 ├── utils
 └── views
    └── include
 ```
+
 <br>
 <br>
 
