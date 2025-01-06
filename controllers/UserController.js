@@ -1,4 +1,6 @@
+require('dotenv').config();
 const models = require('../models/User');
+// const axios = require('axios');
 const { User, Keyword } = require('../models');
 const { where } = require('sequelize');
 const { notFound, success, validationError } = require('../utils/common');
@@ -23,7 +25,6 @@ exports.editProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const { nickname, photo } = req.body;
-    console.log(nickname, photo);
     if (!nickname && !photo) {
       return res.status(400).json({ error: '변경할 데이터가 없습니다.' });
     }
@@ -39,11 +40,11 @@ exports.editProfile = async (req, res) => {
       attributes: ['nickname', 'profile_image'],
     });
 
-    success(
-      res,
-      { nickname: user.nickname, profile_img: user.profile_image },
-      '프로필이 성공적으로 업데이트되었습니다.',
-    );
+    res.status(200).json({
+      message: '프로필이 성공적으로 업데이트되었습니다.',
+      nickname: user.nickname,
+      profile_img: user.profile_image,
+    });
   } catch (err) {
     notFound(res, err, 'Not Found Error', '프로필 업데이트 실패!');
   }
@@ -61,11 +62,7 @@ exports.uploadPhoto = async (req, res) => {
         '업로드 할 파일이 없습니다!',
       );
     }
-    success(
-      res,
-      { photo: req.file.filename },
-      '사진이 성공적으로 업데이트되었습니다.',
-    );
+    res.status(200).json({ photo: req.file.filename });
   } catch (err) {
     notFound(
       res,
@@ -175,6 +172,79 @@ exports.deleteAccount = async (req, res) => {
       .json({ message: '회원 탈퇴 중 오류 발생', error: err.message });
   }
 };
+// exports.deleteAccount = async (req, res) => {
+//   const userId = req.user.id;
+//   // const accessToken = req.session.accessToken;
+
+//   if (!userId) {
+//     return res.status(400).json({
+//       message: '사용자 인증 정보가 필요합니다.',
+//     });
+//   }
+
+//   try {
+//     // 사용자 정보 가져오기
+//     const user = await User.findOne({ where: { id: userId } });
+//     if (!user) {
+//       return res.status(404).json({
+//         message: '사용자를 찾을 수 없습니다.',
+//       });
+//     }
+
+//     // 카카오 연결 끊기
+//     if (user.kakao_id) {
+//       try {
+//         const kakaoUnlinkResponse = await axios.post(
+//           'https://kapi.kakao.com/v1/user/unlink',
+//           {},
+//           {
+//             headers: {
+//               Authorization: `Bearer ${accessToken}`, // Admin 키 사용
+//             },
+//           },
+//         );
+
+//         console.log('Kakao unlink response:', kakaoUnlinkResponse.data);
+//       } catch (error) {
+//         console.error('Kakao unlink error:', error.response?.data || error);
+//         // 확인용
+//         console.log('Kakao unlink error details:', error.response?.data);
+//         console.log(
+//           'Authorization Header:',
+//           `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+//         );
+
+//         return res.status(500).json({
+//           message: '카카오 연결 끊기 중 오류가 발생했습니다.',
+//         });
+//       }
+//     }
+
+//     // DB에서 사용자 삭제
+//     await user.destroy();
+
+//     // 세션 삭제
+//     req.session.destroy((err) => {
+//       if (err) {
+//         console.error('세션 삭제 오류:', err);
+//         return res.status(500).json({
+//           message: '세션 삭제 중 오류가 발생했습니다.',
+//         });
+//       }
+
+//       res.clearCookie('connect.sid');
+//       return res.status(200).json({
+//         message: '회원 탈퇴가 완료되었습니다. 다음에 더 좋은 모습으로 만나요!',
+//       });
+//     });
+//   } catch (err) {
+//     console.error('회원 탈퇴 오류:', err);
+//     return res.status(500).json({
+//       message: '회원 탈퇴 중 오류가 발생했습니다.',
+//       error: err.message,
+//     });
+//   }
+// };
 
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
