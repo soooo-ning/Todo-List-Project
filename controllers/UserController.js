@@ -1,6 +1,7 @@
 const models = require('../models/User');
 const { User, Keyword } = require('../models');
 const { where } = require('sequelize');
+const { notFound, success, validationError } = require('../utils/common');
 
 exports.getProfile = async (req, res) => {
   try {
@@ -14,10 +15,8 @@ exports.getProfile = async (req, res) => {
       userId,
     });
   } catch (err) {
-    console.log('keywords error', err);
-    serverError(res, err);
+    serverError(res, err, 'profile error');
   }
-  // res.render('profile_setting');
 };
 
 exports.editProfile = async (req, res) => {
@@ -39,15 +38,14 @@ exports.editProfile = async (req, res) => {
       where: { id: userId }, //추후 id불러오기
       attributes: ['nickname', 'profile_image'],
     });
-    console.log(updateUser);
-    res.status(200).json({
-      message: '프로필이 성공적으로 업데이트되었습니다.',
-      nickname: user.nickname,
-      profile_img: user.profile_image,
-    });
+
+    success(
+      res,
+      { nickname: user.nickname, profile_img: user.profile_image },
+      '프로필이 성공적으로 업데이트되었습니다.',
+    );
   } catch (err) {
-    console.error('프로필 업데이트 중 오류 발생:', err);
-    res.status(500).json({ err: '프로필 업데이트 실패' });
+    notFound(res, err, 'Not Found Error', '프로필 업데이트 실패!');
   }
 };
 
@@ -56,11 +54,25 @@ exports.uploadPhoto = async (req, res) => {
     const file = req.file;
 
     if (!file) {
-      return res.status(400).json({ error: '파일이 없습니다.' });
+      return notFound(
+        res,
+        err,
+        'uploadphoto error',
+        '업로드 할 파일이 없습니다!',
+      );
     }
-    res.status(200).json({ photo: req.file.filename });
+    success(
+      res,
+      { photo: req.file.filename },
+      '사진이 성공적으로 업데이트되었습니다.',
+    );
   } catch (err) {
-    console.error('controller uploadphoto error>', err);
+    notFound(
+      res,
+      err,
+      'controller uploadphoto error>',
+      '업로드할 파일이 없습니다!',
+    );
   }
 };
 
@@ -76,10 +88,8 @@ exports.getResetPw = async (req, res) => {
       email: user.email,
     });
   } catch (err) {
-    console.log('keywords error', err);
-    serverError(res, err);
+    serverError(res, err, '비밀번호 변경 페이지 로딩 에러');
   }
-  // res.render('change_pw');
 };
 
 exports.resetPw = async (req, res) => {
@@ -92,20 +102,19 @@ exports.resetPw = async (req, res) => {
 
     // 현재 비밀번호 확인
     if (user.pw !== currentPw) {
-      return res.status(400).json({
-        success: false,
-        message: '현재 비밀번호가 일치하지 않습니다.',
-      });
+      return validationError(
+        res,
+        err,
+        'Validation Error',
+        '입력값이 올바르지 않습니다',
+      );
     }
 
     // 새 비밀번호로 업데이트
     await User.update({ pw: newPw }, { where: { id: userId } });
 
     // 성공적으로 비밀번호 변경 완료
-    res.json({
-      success: true,
-      message: '비밀번호가 성공적으로 변경되었습니다.',
-    });
+    success(res, '비밀번호가 성공적으로 변경되었습니다.');
   } catch (err) {
     console.error(err);
     serverError(res, err);
@@ -115,7 +124,6 @@ exports.resetPw = async (req, res) => {
 exports.getDeleteAccount = async (req, res) => {
   try {
     // User모델에서 닉네임 불러오기
-    // const userId = req.body
     const userId = req.user.id;
     const user = await User.findOne({
       where: { id: userId }, //추후 id불러오기
@@ -125,27 +133,29 @@ exports.getDeleteAccount = async (req, res) => {
       password: user.pw,
     });
   } catch (err) {
-    console.log('keywords error', err);
     serverError(res, err);
   }
-  // res.render('delete_account');
 };
 
 const jwt = require('jsonwebtoken');
 
 exports.deleteAccount = async (req, res) => {
-  // const userId = req.session.user.id || req.body.userId || req.user.id; // 세션 또는 요청 본문에서 userId 가져오기
   const userId = req.user.id;
 
   if (!userId) {
-    return res.status(400).json({ message: '사용자 인증 정보가 필요합니다.' });
+    return validationError(
+      res,
+      err,
+      'Validation Error',
+      '사용자 인증 정보가 필요합니다.',
+    );
   }
 
   try {
     // DB에서 사용자 삭제
     const user = await User.findOne({ where: { id: userId } });
     if (!user) {
-      return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+      return notFound(res, err, 'Not Found User', '사용자를 찾을 수 없습니다.');
     }
 
     // 사용자 삭제
@@ -160,9 +170,10 @@ exports.deleteAccount = async (req, res) => {
       }
       console.log('세션이 성공적으로 삭제되었습니다.');
       // 토큰 삭제는 프론트에서 처리
-      return res.status(200).json({
-        message: '회원 탈퇴가 완료되었습니다. 다음에 더 좋은 모습으로 만나요!',
-      });
+      return success(
+        res,
+        '회원 탈퇴가 완료되었습니다. 다음에 더 좋은 모습으로 만나요!',
+      );
     });
   } catch (err) {
     return res
@@ -180,6 +191,6 @@ exports.logout = (req, res) => {
     }
     console.log('세션이 성공적으로 삭제되었습니다.');
     // 로그아웃 성공, 클라이언트에서 세션이 삭제되었음을 알림
-    res.status(200).json({ message: '로그아웃이 완료되었습니다.' });
+    success(res, '로그아웃 되었습니다다!');
   });
 };

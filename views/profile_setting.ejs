@@ -95,8 +95,6 @@
                 <h4>회원 탈퇴</h4>
                 <p><i class="fa-solid fa-arrow-right"></i></p>
               </div>
-              <!-- <a href="/user/reset-pw">비밀번호 변경</a>
-              <a href="/user/delete-account">회원 탈퇴</a> -->
             </div>
           </div>
         </div>
@@ -106,19 +104,13 @@
     <%- include('include/write-popup') %> <%- include('include/detail-popup') %>
 
     <script>
-      /* 지원 ------------------------ */
-
-      // profile-setting의 js
       function getChangePwPage() {
         document.location.href = '/user/reset-pw';
       }
       document.addEventListener('DOMContentLoaded', () => {
         const hideBox = document.getElementById('hidebox');
-        console.log(hideBox);
         const token = localStorage.getItem('token');
         const session = `<%=locals.session_userId%>`;
-        console.log(token);
-        console.log(session);
         if (token === null && session) {
           hideBox.classList.add('hidebox_none');
           return;
@@ -153,10 +145,7 @@
           },
         })
           .then((res) => {
-            // console.log(res.data.photo);
-            // console.log(fileInput);
             uploadedFile = res.data.photo;
-            // console.log(uploadedFile);
             const imgFile = document.getElementById('profile-img');
             imgFile.src = `/uploads/${uploadedFile}`;
             alert('프로필 사진이 업로드 되었습니다!');
@@ -173,7 +162,6 @@
 
         const nickname = document.getElementById('nickname').value;
         console.log(uploadedFile);
-        // axios 데이터 전송
         await axios({
           method: 'patch',
           url: '/user/api/profile',
@@ -183,7 +171,6 @@
           },
         })
           .then((response) => {
-            // 성공적인 업데이트 후 처리
             alert('프로필이 업데이트되었습니다.');
             location.reload();
           })
@@ -192,8 +179,6 @@
             alert('프로필 업데이트 실패');
           });
       }
-
-      /* ------------------------ 지원 */
     </script>
   </body>
 </html>
