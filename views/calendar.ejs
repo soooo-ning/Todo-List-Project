@@ -178,12 +178,26 @@
           const response = await axios.get(`/todo/api/get/${todoId}`);
           const todo = response.data.data;
 
+          if (!todo) {
+            throw new Error('Todo 데이터를 불러오지 못했습니다.');
+          }
+
+          window.currentTodoId = todoId;
+          console.log('Todo ID set in handleTodoClick:', todoId);
+
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
           detailForm.elements['todoTitle'].value = todo.title || '';
           detailForm.elements['todoDate'].value = todo.date || '';
-          detailForm.elements['priority'].value = todo.priority || '';
+
+          const priorityInput = detailForm.querySelector(
+            `input[name="priority"][value="${todo.priority}"]`,
+          );
+          if (priorityInput) priorityInput.checked = true;
+
+          const keywordSelect = detailForm.elements['todoKey'];
+          if (keywordSelect) keywordSelect.value = todo.keyword_id || '';
 
           const todoContentList = detailForm.querySelector('.todo_content');
           todoContentList.innerHTML = '';
@@ -193,21 +207,25 @@
               const li = document.createElement('li');
               li.dataset.contentId = content.id;
               li.innerHTML = `
-                      <input type="checkbox" ${
-                        content.state ? 'checked' : ''
-                      } disabled>
-                      <input type="text" name="todoCon" value="${
-                        content.content || ''
-                      }" disabled>
-                    `;
+                    <label>
+                        <input type="checkbox" name="todoChk" ${
+                          content.state ? 'checked' : ''
+                        } disabled>
+                        <input type="text" name="todoCon" value="${
+                          content.content || ''
+                        }" disabled>
+                    </label>
+                `;
               todoContentList.appendChild(li);
             });
           } else {
             const li = document.createElement('li');
             li.innerHTML = `
-                    <input type="checkbox" disabled>
+                <label>
+                    <input type="checkbox" name="todoChk" disabled>
                     <input type="text" name="todoCon" value="내용 없음" disabled>
-                  `;
+                </label>
+            `;
             todoContentList.appendChild(li);
           }
 
@@ -215,6 +233,7 @@
           document.body.classList.add('pop_open');
         } catch (error) {
           console.error('Failed to load todo details:', error);
+          alert('Todo 상세 정보를 불러오는 데 실패했습니다.');
         }
       };
     </script>

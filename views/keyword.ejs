@@ -58,6 +58,9 @@
             throw new Error('Todo 데이터를 불러오지 못했습니다.');
           }
 
+          window.currentTodoId = todoId;
+          console.log('Todo ID set in handleTodoClick:', todoId);
+
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
@@ -114,36 +117,16 @@
         const li = document.createElement('li');
         li.dataset.contentId = content.id || '';
         li.innerHTML = `
-    <label>
-      <input type="checkbox" name="todoChk" ${
-        content.state ? 'checked' : ''
-      } disabled>
-      <input type="text" name="todoCon" value="${escapeHtml(
-        content.content || '',
-      )}" placeholder="할일을 입력하세요" disabled>
-    </label>
-  `;
-        todoContentList.appendChild(li);
-      }
-
-      function addContentItem(
-        content = { id: null, content: '', state: false },
-      ) {
-        const todoContentList = document.querySelector('.todo_content');
-        if (!todoContentList) return;
-
-        const li = document.createElement('li');
-        li.dataset.contentId = content.id || '';
-        li.innerHTML = `
-    <label>
-      <input type="checkbox" name="todoChk" ${
-        content.state ? 'checked' : ''
-      } disabled>
-      <input type="text" name="todoCon" value="${escapeHtml(
-        content.content || '',
-      )}" placeholder="할일을 입력하세요" disabled>
-    </label>
-  `;
+        <label>
+            <input type="checkbox" name="todoChk" ${
+              content.state ? 'checked' : ''
+            } disabled>
+            <input type="text" name="todoCon" value="${escapeHtml(
+              content.content || '',
+            )}" 
+            placeholder="할일을 입력하세요" disabled>
+        </label>
+    `;
         todoContentList.appendChild(li);
       }
 

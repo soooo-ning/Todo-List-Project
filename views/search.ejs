@@ -166,6 +166,9 @@
             throw new Error('Todo 데이터를 불러오지 못했습니다.');
           }
 
+          window.currentTodoId = todoId;
+          console.log('Todo ID set in handleTodoClick:', todoId);
+
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
@@ -188,21 +191,25 @@
               const li = document.createElement('li');
               li.dataset.contentId = content.id;
               li.innerHTML = `
-                      <input type="checkbox" ${
-                        content.state ? 'checked' : ''
-                      } disabled>
-                      <input type="text" name="todoCon" value="${
-                        content.content || ''
-                      }" disabled>
-                    `;
+                    <label>
+                        <input type="checkbox" ${
+                          content.state ? 'checked' : ''
+                        } disabled>
+                        <input type="text" name="todoCon" value="${
+                          content.content || ''
+                        }" disabled>
+                    </label>
+                `;
               todoContentList.appendChild(li);
             });
           } else {
             const li = document.createElement('li');
             li.innerHTML = `
+                <label>
                     <input type="checkbox" disabled>
                     <input type="text" name="todoCon" value="내용 없음" disabled>
-                  `;
+                </label>
+            `;
             todoContentList.appendChild(li);
           }
 
