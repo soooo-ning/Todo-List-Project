@@ -1,16 +1,15 @@
 {
   "name": "todo-list-project",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "간결함과 직관성을 최우선으로 한 투두리스트 웹사이트! 사용자 중심적인 설계를 통해 불편함을 최소화하고, 할 일 관리에 충실한 서비스를 제공합니다.",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "start": "cross-env NODE_ENV=production pm2 start app.js"
   },
-  "keywords": [],
-  "author": "",
+  "author": "4팀",
   "license": "ISC",
-  "description": "간결함과 직관성을 최우선으로 한 투두리스트 웹사이트! 사용자 중심적인 설계를 통해 불편함을 최소화하고, 할 일 관리에 충실한 서비스를 제공합니다.",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cross-env": "^7.0.3",
