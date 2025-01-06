@@ -2,7 +2,6 @@
 <html lang="en">
   <%- include('include/header', { title: 'deleted' }) %>
   <body>
-    <!-- 네비게이션 부분 -->
     <nav class="nav"><%- include('include/navi') %></nav>
 
     <main class="container deleted_wrap">
@@ -70,7 +69,6 @@
 
     <%- include('include/write-popup') %> <%- include('include/detail-popup') %>
     <script>
-      // escapeHtml 함수 정의
       function escapeHtml(string) {
         if (!string) return '';
         return string
@@ -80,9 +78,6 @@
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#039;');
       }
-    </script>
-    <script>
-      // 팝업 함수
       window.handleTodoClick = async function (todoId) {
         if (!todoId) {
           console.error('Todo ID is required');
@@ -100,6 +95,32 @@
           detailForm.elements['todoDate'].value = todo.date || '';
           detailForm.elements['priority'].value = todo.priority || '';
 
+          const todoContentList = detailForm.querySelector('.todo_content');
+          todoContentList.innerHTML = '';
+
+          if (todo.todo_contents && todo.todo_contents.length > 0) {
+            todo.todo_contents.forEach((content) => {
+              const li = document.createElement('li');
+              li.dataset.contentId = content.id;
+              li.innerHTML = `
+                      <input type="checkbox" ${
+                        content.state ? 'checked' : ''
+                      } disabled>
+                      <input type="text" name="todoCon" value="${
+                        content.content || ''
+                      }" disabled>
+                    `;
+              todoContentList.appendChild(li);
+            });
+          } else {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                    <input type="checkbox" disabled>
+                    <input type="text" name="todoCon" value="내용 없음" disabled>
+                  `;
+            todoContentList.appendChild(li);
+          }
+
           detailPopup.classList.add('on');
           document.body.classList.add('pop_open');
         } catch (error) {
@@ -108,12 +129,10 @@
       };
 
       document.addEventListener('DOMContentLoaded', () => {
-        // 복구 버튼
         document.querySelectorAll('.recover-button').forEach((button) => {
           button.addEventListener('click', async function () {
             const id = this.dataset.id;
             const title = this.dataset.title;
-            console.log('Restore clicked for:', id, title); // 디버깅용
 
             if (confirm(`'${title}'을(를) 복구하시겠습니까?`)) {
               try {
@@ -137,7 +156,6 @@
           });
         });
 
-        // 선택 복구 버튼 이벤트
         const restoreSelectedButton = document.getElementById(
           'restoreSelectedButton',
         );
@@ -146,7 +164,6 @@
             const selectedCheckboxes = document.querySelectorAll(
               '.select-checkbox:checked',
             );
-            console.log('Selected items:', selectedCheckboxes.length); // 디버깅용
 
             const selectedIds = Array.from(selectedCheckboxes).map(
               (cb) => cb.value,
@@ -174,7 +191,6 @@
                   throw new Error('선택 복구 실패');
                 }
               } catch (error) {
-                console.error('복구 중 오류:', error);
                 alert('복구 중 오류가 발생했습니다.');
               }
             }

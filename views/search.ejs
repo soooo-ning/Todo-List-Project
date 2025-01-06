@@ -14,8 +14,6 @@
             검색 결과
           </span>
         </h3>
-
-        <!-- <h3 class="sub_title"><span>검색 결과</span></h3> -->
         <div class="card-container add" id="cardContainer"></div>
       </div>
     </main>
@@ -23,7 +21,6 @@
     <%- include('include/write-popup') %> <%- include('include/detail-popup') %>
 
     <script>
-      // escapeHtml 함수 정의
       function escapeHtml(string) {
         if (!string) return '';
         return string
@@ -33,9 +30,6 @@
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#039;');
       }
-    </script>
-    <script>
-      // 내용 항목 추가
       function addContentItem(
         content = { id: null, content: '', state: false },
       ) {
@@ -98,10 +92,9 @@
 
             cardContainer.innerHTML = html;
 
-            // 제목 클릭
             document.querySelectorAll('.card').forEach((card) => {
               card.addEventListener('click', () => {
-                const todoId = card.dataset.id; // data에서 todoId 가져오기
+                const todoId = card.dataset.id;
                 if (todoId) {
                   if (window.handleTodoClick) {
                     window.handleTodoClick(todoId);
@@ -173,7 +166,6 @@
             throw new Error('Todo 데이터를 불러오지 못했습니다.');
           }
 
-          // 팝업 데이터 채우기
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
@@ -188,18 +180,32 @@
           const keywordSelect = detailForm.elements['todoKey'];
           if (keywordSelect) keywordSelect.value = todo.keyword_id || '';
 
-          //Todo Content 채우기
           const todoContentList = detailForm.querySelector('.todo_content');
           todoContentList.innerHTML = '';
+
           if (todo.todo_contents && todo.todo_contents.length > 0) {
             todo.todo_contents.forEach((content) => {
-              addContentItem(content);
+              const li = document.createElement('li');
+              li.dataset.contentId = content.id;
+              li.innerHTML = `
+                      <input type="checkbox" ${
+                        content.state ? 'checked' : ''
+                      } disabled>
+                      <input type="text" name="todoCon" value="${
+                        content.content || ''
+                      }" disabled>
+                    `;
+              todoContentList.appendChild(li);
             });
           } else {
-            addContentItem();
+            const li = document.createElement('li');
+            li.innerHTML = `
+                    <input type="checkbox" disabled>
+                    <input type="text" name="todoCon" value="내용 없음" disabled>
+                  `;
+            todoContentList.appendChild(li);
           }
 
-          // 팝업 열기
           detailPopup.classList.add('on');
           document.body.classList.add('pop_open');
         } catch (error) {
