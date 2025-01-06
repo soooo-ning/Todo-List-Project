@@ -20,7 +20,7 @@
 <br>
 
 - **Language**: JavaScript
-- **Library & Framework** : Node.js
+- **Library & Framework** : Node.js express
 - **Database** : MySQL
 - **ORM** : Sequelize
 - **Deploy**: AWS EC2
