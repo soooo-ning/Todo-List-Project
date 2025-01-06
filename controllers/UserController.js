@@ -7,7 +7,7 @@ exports.getProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findOne({
-      where: { id: userId }, //추후 id불러오기
+      where: { id: userId },
       attributes: ['email'],
     });
     res.render('profile_setting', {
@@ -35,7 +35,7 @@ exports.editProfile = async (req, res) => {
       { where: { id: userId } },
     );
     const user = await User.findOne({
-      where: { id: userId }, //추후 id불러오기
+      where: { id: userId },
       attributes: ['nickname', 'profile_image'],
     });
 
@@ -80,7 +80,7 @@ exports.getResetPw = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findOne({
-      where: { id: userId }, //추후 id불러오기
+      where: { id: userId },
       attributes: ['pw', 'email'],
     });
     res.render('change_pw', {
@@ -97,10 +97,8 @@ exports.resetPw = async (req, res) => {
     const { currentPw, newPw } = req.body;
     const userId = req.user.id;
 
-    // 사용자 정보 가져오기
     const user = await User.findOne({ where: { id: userId } });
 
-    // 현재 비밀번호 확인
     if (user.pw !== currentPw) {
       return validationError(
         res,
@@ -110,11 +108,9 @@ exports.resetPw = async (req, res) => {
       );
     }
 
-    // 새 비밀번호로 업데이트
     await User.update({ pw: newPw }, { where: { id: userId } });
 
-    // 성공적으로 비밀번호 변경 완료
-    success(res, '비밀번호가 성공적으로 변경되었습니다.');
+    success(res, '비밀번호 변경 성공', '비밀번호가 성공적으로 변경되었습니다.');
   } catch (err) {
     console.error(err);
     serverError(res, err);
@@ -123,10 +119,9 @@ exports.resetPw = async (req, res) => {
 
 exports.getDeleteAccount = async (req, res) => {
   try {
-    // User모델에서 닉네임 불러오기
     const userId = req.user.id;
     const user = await User.findOne({
-      where: { id: userId }, //추후 id불러오기
+      where: { id: userId },
       attributes: ['pw'],
     });
     res.render('delete_account', {
@@ -152,26 +147,25 @@ exports.deleteAccount = async (req, res) => {
   }
 
   try {
-    // DB에서 사용자 삭제
     const user = await User.findOne({ where: { id: userId } });
     if (!user) {
       return notFound(res, err, 'Not Found User', '사용자를 찾을 수 없습니다.');
     }
 
-    // 사용자 삭제
     await user.destroy();
 
-    // 세션 삭제
     req.session.destroy((err) => {
       if (err) {
         return res
           .status(500)
           .json({ message: '세션 삭제 오류 발생', error: err });
       }
+
+      res.clearCookie('connect.sid');
       console.log('세션이 성공적으로 삭제되었습니다.');
-      // 토큰 삭제는 프론트에서 처리
       return success(
         res,
+        '회원 탈퇴가 완료',
         '회원 탈퇴가 완료되었습니다. 다음에 더 좋은 모습으로 만나요!',
       );
     });
@@ -190,7 +184,6 @@ exports.logout = (req, res) => {
         .json({ message: '세션 삭제 오류 발생', error: err });
     }
     console.log('세션이 성공적으로 삭제되었습니다.');
-    // 로그아웃 성공, 클라이언트에서 세션이 삭제되었음을 알림
-    success(res, '로그아웃 되었습니다다!');
+    success(res, '로그아웃 성공', '로그아웃 되었습니다!');
   });
 };

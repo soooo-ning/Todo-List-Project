@@ -3,7 +3,6 @@
   <%- include('include/header', { title: 'profile_setting' })%>
 
   <body>
-    <!-- 네비게이션 부분 -->
     <nav class="nav"><%- include('include/navi') %></nav>
 
     <main class="container">
@@ -130,11 +129,10 @@
       }
 
       let uploadedFile = null;
-      // 파일 선택 후 미리보기
       function uploadPhoto() {
         const fileInput = document.getElementById('dynamic-file');
         const formData = new FormData();
-        formData.append('dynamic-file', fileInput.files[0]); // "key",value
+        formData.append('dynamic-file', fileInput.files[0]);
 
         axios({
           method: 'post',
@@ -156,7 +154,6 @@
           });
       }
 
-      // '프로필변경'버튼을 통해 닉네임과 파일을 서버로 전송
       async function profileUpdate(event) {
         event.preventDefault();
 
