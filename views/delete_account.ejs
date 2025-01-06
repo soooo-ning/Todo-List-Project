@@ -3,7 +3,6 @@
   <%- include('include/header', { title: 'delete_account' })%>
 
   <body>
-    <!-- 네비게이션 부분 -->
     <nav class="nav"><%- include('include/navi') %></nav>
 
     <main class="container">
@@ -62,21 +61,19 @@
           return;
         }
 
-        // Axios로 회원 탈퇴 API 요청 보내기
         axios
           .delete('/user/api/delete-account', {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`, // JWT 토큰을 헤더에 포함
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           })
           .then((response) => {
-            alert(response.data.message); // 성공 메시지 출력
+            alert(response.data.message);
 
-            // 로컬 스토리지 초기화 (토큰 삭제)
             localStorage.clear();
             localStorage.removeItem('nickname');
+            document.cookie = 'connect.sid=; Path=/; ';
 
-            // 회원 탈퇴 후 홈 페이지로 리디렉션
             window.location.href = '/';
           })
           .catch((error) => {

@@ -8,10 +8,10 @@ const uploadDetail = multer({
       done(null, uploadPath);
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname)); // 파일 이름을 날짜 + 확장자 형태로 저장
+      cb(null, Date.now() + path.extname(file.originalname));
     },
   }),
-  limits: { fieldSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fieldSize: 5 * 1024 * 1024 },
 });
 
 module.exports = uploadDetail;
