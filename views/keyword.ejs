@@ -44,6 +44,7 @@
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#039;');
       }
+
       window.handleTodoClick = async function (todoId) {
         if (!todoId) {
           console.error('Todo ID is required');
@@ -59,11 +60,11 @@
           }
 
           window.currentTodoId = todoId;
-          console.log('Todo ID set in handleTodoClick:', todoId);
 
           const detailPopup = document.querySelector('.detail-popup');
           const detailForm = document.forms['form-todo-detail'];
 
+          // 기본 정보 설정
           detailForm.elements['todoTitle'].value = todo.title || '';
           detailForm.elements['todoDate'].value = todo.date || '';
 
@@ -75,31 +76,19 @@
           const keywordSelect = detailForm.elements['todoKey'];
           if (keywordSelect) keywordSelect.value = todo.keyword_id || '';
 
+          // todo 내용 리스트 초기화 및 추가
           const todoContentList = detailForm.querySelector('.todo_content');
           todoContentList.innerHTML = '';
+
           if (todo.todo_contents && todo.todo_contents.length > 0) {
             todo.todo_contents.forEach((content) => {
-              const li = document.createElement('li');
-              li.dataset.contentId = content.id;
-              li.innerHTML = `
-                      <input type="checkbox" ${
-                        content.state ? 'checked' : ''
-                      } disabled>
-                      <input type="text" name="todoCon" value="${
-                        content.content || ''
-                      }" disabled>
-                    `;
-              todoContentList.appendChild(li);
+              addContentItem(content);
             });
           } else {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                    <input type="checkbox" disabled>
-                    <input type="text" name="todoCon" value="내용 없음" disabled>
-                  `;
-            todoContentList.appendChild(li);
+            addContentItem({ content: '내용 없음', state: false });
           }
 
+          // 팝업 표시
           detailPopup.classList.add('on');
           document.body.classList.add('pop_open');
         } catch (error) {
@@ -108,43 +97,16 @@
         }
       };
 
-      function addContentItem(
-        content = { id: null, content: '', state: false },
-      ) {
-        const todoContentList = document.querySelector('.todo_content');
-        if (!todoContentList) return;
-
-        const li = document.createElement('li');
-        li.dataset.contentId = content.id || '';
-        li.innerHTML = `
-        <label>
-            <input type="checkbox" name="todoChk" ${
-              content.state ? 'checked' : ''
-            } disabled>
-            <input type="text" name="todoCon" value="${escapeHtml(
-              content.content || '',
-            )}" 
-            placeholder="할일을 입력하세요" disabled>
-        </label>
-    `;
-        todoContentList.appendChild(li);
-      }
-
+      // DOM 로드 시 이벤트 리스너 설정
       document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.card').forEach((card) => {
-          card.addEventListener('click', async () => {
+          card.addEventListener('click', () => {
             const todoId = card.dataset.id;
-
             if (!todoId) {
               console.error('Todo ID is missing.');
               return;
             }
-
-            if (window.handleTodoClick) {
-              window.handleTodoClick(todoId);
-            } else {
-              console.error('handleTodoClick 함수가 정의되지 않았습니다.');
-            }
+            window.handleTodoClick(todoId);
           });
         });
       });
