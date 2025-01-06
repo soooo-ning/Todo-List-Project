@@ -7,18 +7,14 @@
   />
 
   <body>
-    <!-- 네비게이션 부분 -->
     <nav class="nav"><%- include('include/navi') %></nav>
 
     <main class="container dashboard_wrap">
       <div class="content">
         <section class="container-fluid">
           <header>
-            <!-- 로고 -->
             <h1 class="main_title">Todo Checkk</h1>
           </header>
-
-          <!-- 진행 상태 -->
           <div class="summary card custom-progress text-black">
             <div class="card-body">
               <p class="card-title">
@@ -37,7 +33,6 @@
                 </div>
               </div>
 
-              <!-- 오늘의 투두 현황 -->
               <p class="card-title">
                 오늘의 투두 상황 <span id="allprogress"></span>
               </p>
@@ -54,7 +49,6 @@
             </div>
           </div>
 
-          <!-- 오늘의 할 일 -->
           <form action="today-todo">
             <div class="card bg-light">
               <div class="card-body">
@@ -69,14 +63,11 @@
                     </button></a
                   >
                 </div>
-                <ul id="todayTodos" class="flex_wrap mt20">
-                  <!-- 동적으로 추가될 부분 -->
-                </ul>
+                <ul id="todayTodos" class="flex_wrap mt20"></ul>
               </div>
             </div>
           </form>
 
-          <!-- 이번주 할 일 -->
           <div class="card-body">
             <h5 class="card-title">이번주 할 일</h5>
             <table class="table w100">
@@ -86,13 +77,10 @@
                   <th>할 일</th>
                 </tr>
               </thead>
-              <tbody id="weekTodos">
-                <!--데이터를 채울 부분 -->
-              </tbody>
+              <tbody id="weekTodos"></tbody>
             </table>
           </div>
 
-          <!-- 날씨 -->
           <div class="card-body">
             <h5 class="card-title">서울 날씨</h5>
             <div class="weather-container">
@@ -102,7 +90,6 @@
             </div>
           </div>
 
-          <!-- 우선순위 -->
           <div class="card-body">
             <div class="flex_wrap sb">
               <h5 class="card-title">우선순위</h5>
@@ -146,11 +133,8 @@
           return;
         }
 
-        console.log('Todo ID:', todoId);
-
         try {
           const response = await axios.get(`/todo/api/get/${todoId}`);
-          console.log('전체 응답:', response.data);
 
           if (!response.data || !response.data.data) {
             throw new Error('Invalid response data');
@@ -165,13 +149,11 @@
 
           const detailForm = document.forms['form-todo-detail'];
 
-          // 기본 데이터 설정
           detailForm.querySelector('input[name="todoTitle"]').value =
             todo.title || '';
           detailForm.querySelector('input[name="todoDate"]').value =
             todo.date || '';
 
-          // 우선순위 설정
           const priorityInput = detailForm.querySelector(
             `input[name="priority"][value="${todo.priority}"]`,
           );
@@ -179,7 +161,6 @@
             priorityInput.checked = true;
           }
 
-          // 키워드 설정
           const keywordSelect = detailForm.querySelector(
             'select[name="todoKey"]',
           );
@@ -187,7 +168,6 @@
             keywordSelect.value = todo.keyword_id;
           }
 
-          // Todo 내용 설정
           const todoContentList = detailForm.querySelector('.todo_content');
           todoContentList.innerHTML = '';
 
@@ -214,7 +194,6 @@
             todoContentList.appendChild(li);
           }
 
-          // 팝업 표시
           detailPopup.classList.add('on');
           document.querySelector('body').classList.add('pop_open');
         } catch (error) {
@@ -297,7 +276,6 @@
             });
         };
 
-        // 이번주 할 일
         const fetchWeeklyTodos = () => {
           const days = [
             '일요일',
@@ -316,7 +294,6 @@
               return response.json();
             })
             .then((response) => {
-              console.log('Weekly todos response:', response.data); // 원본 데이터 확인
               const weeklyTodos = response.data || [];
               const tableBody = document.getElementById('weekTodos');
 
@@ -324,9 +301,7 @@
 
               tableBody.innerHTML = '';
 
-              // 날짜별로 할 일 그룹화 - todo 객체 전체를 보존
               const groupedTodos = weeklyTodos.reduce((acc, todo) => {
-                console.log('Processing todo:', todo); // 각 todo 객체 확인
                 const dateKey = new Date(todo.date).toDateString();
                 if (!acc[dateKey]) {
                   acc[dateKey] = {
@@ -334,17 +309,15 @@
                     todos: [],
                   };
                 }
-                // todo 객체 전체를 보존하여 push
+
                 acc[dateKey].todos.push({
-                  id: todo.id, // id 명시적 포함
+                  id: todo.id,
                   title: todo.title,
                   date: todo.date,
-                  // 기타 필요한 필드들도 포함
                 });
                 return acc;
               }, {});
 
-              // 그룹화된 데이터를 날짜순으로 정렬하여 표시
               Object.values(groupedTodos)
                 .sort((a, b) => a.date - b.date)
                 .forEach(({ date, todos }) => {
@@ -360,7 +333,6 @@
                   const taskCell = document.createElement('td');
                   taskCell.innerHTML = todos
                     .map((todo) => {
-                      console.log('Creating todo item:', todo); // todo 객체 확인
                       return `<div class="todo-item" data-todo-id="${
                         todo.id
                       }" data-todo-title="${todo.title}">${
@@ -373,12 +345,9 @@
                   tableBody.appendChild(row);
                 });
 
-              // 각 투두 항목에 클릭 이벤트 추가
               tableBody.querySelectorAll('.todo-item').forEach((item) => {
                 item.addEventListener('click', () => {
                   const todoId = item.dataset.todoId;
-                  console.log('클릭된 todo 항목:', item); // 클릭된 요소 확인
-                  console.log('클릭된 todoId:', todoId); // todoId 확인
                   if (todoId && todoId !== 'undefined') {
                     handleTodoClick(todoId);
                   } else {
@@ -388,12 +357,10 @@
               });
             })
             .catch((error) => {
-              console.error('오류:', error);
               alert('이번주 할 일을 불러오는 중 오류가 발생했습니다.');
             });
         };
 
-        // 우선순위별 할 일 가져오기
         window.fetchPriorityTodos = (priority) => {
           const todosContainer = document.getElementById('todos');
           if (!todosContainer) return;
@@ -436,7 +403,7 @@
                 listItem
                   .querySelector('.todo-item')
                   .addEventListener('click', () => {
-                    handleTodoClick(todo.id); // 투두 클릭 시 상세 조회
+                    handleTodoClick(todo.id);
                   });
                 list.appendChild(listItem);
               });
@@ -450,7 +417,6 @@
             });
         };
 
-        // 날씨 API
         const fetchWeather = async () => {
           const apiKey = 'da450c832635d5d57538d8acdd43e25f';
           const weatherContainer = document.querySelector('.weather-container');
@@ -474,10 +440,9 @@
           }
         };
 
-        // 초기 데이터 로드
         fetchTodayTodos();
         fetchWeeklyTodos();
-        fetchPriorityTodos('high'); // 페이지 로드 시 '상' 우선순위 데이터 로드
+        fetchPriorityTodos('high');
         fetchWeather();
       });
     </script>
