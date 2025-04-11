@@ -62,29 +62,32 @@
 - 이메일 회원가입을 통한 JWT 토큰 발급 로그인
 - Oauth2를 활용한 kakao, goole session 로그인
 <br><br>
-<img src="https://github.com/user-attachments/assets/22550eb2-00cd-4fa8-aa0a-392e0c2fbe40" width="1500px;"/><br>
+
+<img src="https://github.com/user-attachments/assets/d98f6146-0512-454a-bb32-ce70d2569e66" width="1500px;"/><br><br>
 
 ### 투두리스트
 
 - 투두리스트 생성 및 캘린더, 키워드, 검색 조회
 - soft delete를 활용한 삭제 게시물 복구 기능
 <br><br>
-<img src="https://github.com/user-attachments/assets/714a471f-309a-47fd-b87f-aaae810cab00" width="1500px;"/><br><br>
-<img src="https://github.com/user-attachments/assets/55fe32ff-3ed1-44b0-8d57-6db464164a76" width="1500px;"/><br>
+
+<img src="https://github.com/user-attachments/assets/f3485493-ffb1-41a9-a2ae-6e20a680aa5f" width="1500px;"/><br><br>
+<img src="https://github.com/user-attachments/assets/6391c13e-b60d-4e71-89de-e185f2541cb9" width="1500px;"/><br><br>
 
 ### 마이페이지
 
 - 마이페이지 데이터 수정
 - multer를 활용한 파일 업로드 기능
 <br><br>
-<img src="https://github.com/user-attachments/assets/ff51dfcc-b65a-4347-b1de-52013a28af9d" width="1500px;"/><br>
+
+<img src="https://github.com/user-attachments/assets/d6c64334-ac4c-4d7f-ae83-06c15de0600c" width="1500px;"/><br><br>
 
 ### UI/UX
 
 - 디스플레이 모드 기능 (다크모드, 라이트모드)
 <br><br>
-<img src="https://github.com/user-attachments/assets/514fc309-f0d7-4eaf-89e7-286149842385" width="1500px;"/>
-<br><br>
+
+<img src="https://github.com/user-attachments/assets/f7aeb4b0-327e-4a2e-86d4-0ccd036fd075" width="1500px;"/><br><br>
 
 ## 💻 Getting Started
 
