@@ -3,7 +3,7 @@
 간결함과 직관성을 최우선으로 한 투두리스트 웹사이트! <br>
 사용자 중심적인 설계를 통해 불편함을 최소화하고, 할 일 관리에 충실한 서비스를 제공합니다.
 
-> 👉 http://43.200.254.250:8080/ ✨배포종료✨
+> 👉 http://43.200.254.250:8080/ ✨배포종료✨ <br>
 
 ![main](https://github.com/user-attachments/assets/b1c4a525-dfc2-4b71-b70e-6c391933fe0a)
 
@@ -12,6 +12,7 @@
 ## 🗓️ Project Period
 
 2024.12.16 ~ 2024. 12.30 (2주)
+
 <br><br><br>
 
 ## 👨‍👩‍👧‍👦 Developer
@@ -27,30 +28,28 @@
     </tr>
   </tbody>
 </table>
+
 <br><br>
 
 ## 🔧 Stack
 
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=flat-square&logo=javascript&logoColor=white"/><img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"/><img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white"/><img src="https://img.shields.io/badge/mysql-4479A1?style=flat-square&logo=mysql&logoColor=white"/><img src="https://img.shields.io/badge/Sequelize-52B0E7?style=flat-square&logo=sequelize&logoColor=white"/><img src="https://img.shields.io/badge/EJS-B4CA65?style=flat-square&logo=ejs&logoColor=white"/>
 <br>
-
 - **Language** : JavaScript
 - **Library & Framework** : Node.js express
 - **Database** : MySQL
 - **ORM** : Sequelize
 - **Deploy** : AWS EC2
 
-  <br><br>
+<br><br>
 
 ## 💻 Software Design
 
 ### 메뉴 구조도
-<img src="https://github.com/user-attachments/assets/2626c13d-4688-4955-80c8-e2ad12e8c994" width="1500px;" alt=""/>
-<br>
+<img src="https://github.com/user-attachments/assets/2626c13d-4688-4955-80c8-e2ad12e8c994" width="1500px;" alt=""/><br>
 
 ### API 명세서
-<img src="https://github.com/user-attachments/assets/84988fc9-1079-4c65-97d4-3f3db161bcaf" width="800px;" alt=""/>
-<br>
+<img src="https://github.com/user-attachments/assets/84988fc9-1079-4c65-97d4-3f3db161bcaf" width="800px;" alt=""/><br>
 
 ### ERD
 <img src="https://github.com/user-attachments/assets/f98b4c36-9095-4e30-bcec-e9484b89fa55" width="1500px;" alt=""/>
@@ -63,23 +62,20 @@
 
 - 이메일 회원가입을 통한 JWT 토큰 발급 로그인
 - Oauth2를 활용한 kakao, goole session 로그인
-  <video src="https://github.com/user-attachments/assets/22550eb2-00cd-4fa8-aa0a-392e0c2fbe40" width="1500px;" width="auto;" mute autoplay loop/>
-  <br>
+  <video src="https://github.com/user-attachments/assets/22550eb2-00cd-4fa8-aa0a-392e0c2fbe40" width="1500px;" width="auto;" mute autoplay loop/><br>
 
 ### 투두리스트
 
 - 투두리스트 생성 및 캘린더, 키워드, 검색 조회
 - soft delete를 활용한 삭제 게시물 복구 기능
   <video src="https://github.com/user-attachments/assets/714a471f-309a-47fd-b87f-aaae810cab00" width="1500px;" width="auto;" mute autoplay loop/>
-  <video src="https://github.com/user-attachments/assets/55fe32ff-3ed1-44b0-8d57-6db464164a76" width="1500px;" width="auto;" mute autoplay loop/>
-  <br>
+  <video src="https://github.com/user-attachments/assets/55fe32ff-3ed1-44b0-8d57-6db464164a76" width="1500px;" width="auto;" mute autoplay loop/><br>
 
 ### 마이페이지
 
 - 마이페이지 데이터 수정
 - multer를 활용한 파일 업로드 기능
-  <video src="https://github.com/user-attachments/assets/ff51dfcc-b65a-4347-b1de-52013a28af9d" width="1500px;" width="auto;" mute autoplay loop/>
-  <br>
+  <video src="https://github.com/user-attachments/assets/ff51dfcc-b65a-4347-b1de-52013a28af9d" width="1500px;" width="auto;" mute autoplay loop/><br>
 
 ### UI/UX
 
