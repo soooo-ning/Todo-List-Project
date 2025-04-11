@@ -5,14 +5,13 @@
 
 > 👉 http://43.200.254.250:8080/ ✨배포종료✨
 
-<!-- ![](https://user-images.png) 메인 이미지 추가 -->
+<img src="/static/img/main.jpg" width="1500px;" alt=""/>
 <br>
 
-## 🗓️ project period
+## 🗓️ Project Period
 
 2024.12.16 ~ 2024. 12.30
-<br>
-<br>
+<br><br>
 
 ## 🔧 Stack
 
@@ -26,7 +25,7 @@
 - **Deploy**: AWS EC2
   <br>
 
-## 💻 software design
+## 💻 Software Design
 
 ### 메뉴 구조도
 
@@ -41,8 +40,7 @@
 ### ERD
 
 <img src="/static/img/erd.png" width="1500px;" alt=""/>
-<br>
-<br>
+<br><br>
 
 ## ⭐ Main Feature
 
@@ -50,29 +48,28 @@
 
 - 이메일 회원가입을 통한 JWT 토큰 발급 로그인
 - Oauth2를 활용한 kakao, goole session 로그인
-- <!-- 동영상 캡쳐부분 넣기 -->
-<br>
+  <video src="/static/img/sign_login.mp4" width="1500px;" width="auto;" mute autoplay loop/>
+  <br>
 
 ### 투두리스트
 
 - 투두리스트 생성 및 캘린더, 키워드, 검색 조회
 - soft delete를 활용한 삭제 게시물 복구 기능
-- <!-- 동영상 캡쳐부분 넣기 -->
-<br>
+  <video src="/static/img/todo.mp4" width="1500px;" width="auto;" mute autoplay loop/>
+  <br>
 
 ### 마이페이지
 
 - 마이페이지 데이터 수정
 - multer를 활용한 파일 업로드 기능
-- <!-- 동영상 캡쳐부분 넣기 -->
-<br>
+  <video src="/static/img/mypage.mp4" width="1500px;" width="auto;" mute autoplay loop/>
+  <br>
 
 ### UI/UX
 
 - 디스플레이 모드 기능 (다크모드, 라이트모드)
-- <!-- 동영상 캡쳐부분 넣기 -->
-<br>
-<br>
+  <video src="/static/img/display.mp4" width="1500px;" width="auto;" mute autoplay loop/>
+  <br><br>
 
 ## 💻 Getting Started
 
@@ -103,26 +100,26 @@ npm run start
 ## :open_file_folder: Project Structure
 
 ```markdown
-src
-├── config
-├── controllers
-├── middlewares
+📂 Todo-list-project
+├── config # 설정 파일
+├── controllers # 로직 및 요청 처리
+├── middlewares # 미들웨어
 ├── migrations
-├── models
-├── routes
-├── sql
-├── static
+├── models # 데이터베이스 모델
+├── routes # 라우터 정의
+├── db # 데이터베이스 init 파일
+├── static # 정적 파일 (CSS, 이미지, JS)
 │   ├── css
 │   ├── font
 │   ├── img
-│   └── uploads
-├── utils
-└── views
-   └── include
+│   └── uploads # multer 업로드 파일 저장
+├── utils # 유틸 함수 (응답 함수)
+└── views # 템플릿 (HTML, EJS 등)
+   └── include # 공통 모듈
+└── app.js # 서버 초기화 및 API 라우트 연결
 ```
 
-<br>
-<br>
+<br><br>
 
 ## 👨‍👩‍👧‍👦 Developer
 
@@ -146,9 +143,9 @@ src
 **이소은** ([soooo-ning](https://github.com/soooo-ning))
 
 - 전체 개발 일정 및 이슈 관리
-- 전체 아키텍처 구성
-- 투두 API 개발
-- 서버 모니터링 및 배포
+- 전체 애플리케이션 아키텍처 및 폴더 구조 설계
+- 투두리스트 관리 API 개발 (todo 도메인)
+- 서버 모니터링 및 배포 등 인프라 관리
 
 **이채훈** ([maxbeny](https://github.com/maxbeny))
 
