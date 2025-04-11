@@ -13,17 +13,33 @@
 2024.12.16 ~ 2024. 12.30 (2주)
 <br><br>
 
-## 🔧 Stack
+## 👨‍👩‍👧‍👦 Developer
 
-<img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"/><img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white"/><img src="https://img.shields.io/badge/Sequelize-52B0E7?style=flat-square&logo=sequelize&logoColor=white"/><img src="https://img.shields.io/badge/EJS-B4CA65?style=flat-square&logo=ejs&logoColor=white"/>
+<table style="overflow:hidden;">
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://github.com/soooo-ning"><img src="/static/img/soooo-ning.jpg" width="100px;" height="100px;"/><br /><sub><b>BE 팀장 : 이소은</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/maxbeny"><img src="/static/img/maxbeny.png" width="100px;" height="100px;"/><br /><sub><b>BE 팀원 : 이채훈</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/lychee-55"><img src="/static/img/lychee-55.png" width="100px;" height="100px;"/><br /><sub><b>FS 팀원 : 이지원</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/baekdahyun"><img src="/static/img/baekdahyun.png" width="100px;" height="100px;"/><br /><sub><b>FE 팀원 : 백다현</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/suvd0377"><img src="/static/img/suvd0377.jpg" height="100px;" width="auto;" alt=""/><br /><sub><b>FE 팀원 : 간솝드</b></sub></a><br /></td>
+     <tr/>
+    </tr>
+  </tbody>
+</table>
 <br>
 
-- **Language**: JavaScript
+## 🔧 Stack
+
+<img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"/><img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white"/><img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white"/><img src="https://img.shields.io/badge/Sequelize-52B0E7?style=flat-square&logo=sequelize&logoColor=white"/><img src="https://img.shields.io/badge/EJS-B4CA65?style=flat-square&logo=ejs&logoColor=white"/>
+<br>
+
+- **Language** : JavaScript
 - **Library & Framework** : Node.js express
 - **Database** : MySQL
 - **ORM** : Sequelize
-- **Deploy**: AWS EC2
-  <br>
+- **Deploy** : AWS EC2
+  <br><br>
 
 ## 💻 Software Design
 
@@ -120,23 +136,6 @@ npm run start
 ```
 
 <br><br>
-
-## 👨‍👩‍👧‍👦 Developer
-
-<table style="overflow:hidden;">
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/soooo-ning"><img src="/static/img/soooo-ning.jpg" width="100px;" alt=""/><br /><sub><b>BE 팀장 : 이소은</b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/maxbeny"><img src="/static/img/maxbeny.png" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 이채훈</b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/lychee-55"><img src="/static/img/lychee-55.png" width="100px;" alt=""/><br /><sub><b>FS 팀원 : 이지원</b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/baekdahyun"><img src="/static/img/baekdahyun.png" width="100px;" alt=""/><br /><sub><b>FE 팀원 : 백다현</b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/suvd0377"><img src="/static/img/suvd0377.jpg" height="100px;" width="auto;" alt=""/><br /><sub><b>FE 팀원 : 간솝드</b></sub></a><br /></td>
-     <tr/>
-    </tr>
-  </tbody>
-</table>
-<br>
-<br>
 
 ## 👨‍💻 Role & Contribution
 
