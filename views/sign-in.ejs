@@ -15,7 +15,7 @@
             <span>EMAIL</span>
             <input
               type="email"
-              placeholder="EMAIL을 입력하세요"
+              placeholder="EMAIL을 입력하세요  🎈테스트 이메일 : test@email.com🎈"
               name="userEmail"
               required
             />
@@ -24,7 +24,7 @@
             <span>PW</span>
             <input
               type="password"
-              placeholder="PW를 입력하세요"
+              placeholder="PW를 입력하세요  🎈테스트 PW : 1234🎈"
               name="userPw"
               required
               minlength="4"
@@ -64,22 +64,19 @@
       </div>
     </div>
     <script>
-      // 각 인풋 필드를 배열로 저장
       const inputs = document.querySelectorAll('input');
 
-      // 'Enter' 키가 눌렸을 때 포커스를 다음 인풋으로 이동시키는 함수
       inputs.forEach((input, index) => {
         input.addEventListener('keydown', function (event) {
           if (event.key === 'Enter') {
-            event.preventDefault(); // Enter 키의 기본 동작(폼 제출)을 막음
+            event.preventDefault();
             if (inputs[index + 1]) {
-              inputs[index + 1].focus(); // 다음 인풋으로 포커스를 이동
+              inputs[index + 1].focus();
             }
           }
         });
       });
 
-      // 로그인 폼 submit 이벤트 처리
       document.forms['form-login'].addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -87,7 +84,6 @@
         const email = document.querySelector('[name="userEmail"]').value.trim();
         const password = document.querySelector('[name="userPw"]').value.trim();
 
-        // 클라이언트 유효성 검사
         if (!email || !password) {
           alert('이메일과 비밀번호를 모두 입력해주세요.');
           return;
@@ -97,30 +93,24 @@
           return;
         }
 
-        // 서버로 전송할 데이터
         const formData = {
           email: email,
           pw: password,
         };
 
-        // Axios를 사용한 POST 요청
         axios
           .post('/auth/api/sign-in', formData)
           .then((response) => {
-            // 로그인 성공 시
             if (response.data.token) {
-              // JWT 토큰을 로컬 스토리지에 저장
               localStorage.setItem('token', response.data.token);
               localStorage.setItem('nickname', response.data.nickname);
 
               alert('로그인 완료되었습니다.');
-              // 대시보드로 리다이렉트
               window.location.href = '/todo/dashboard';
             }
           })
           .catch((error) => {
             console.error('오류:', error);
-            // 로그인 실패 처리
             alert('등록된 유저가 아니거나 비밀번호가 다릅니다');
           });
       });

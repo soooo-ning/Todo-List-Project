@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const loadUserData = async (req, res, next) => {
   try {
-    // 인증이 필요하지 않은 경로 예외 처리
     const publicRoutes = [
       '/', // 로그인 페이지
       '/auth/api/sign-in', // 로그인 API
@@ -18,37 +17,20 @@ const loadUserData = async (req, res, next) => {
       '/auth/search-pw', // 비밀번호 찾기 페이지
       '/auth/api/search-pw', // 비밀번호 찾기 API
     ];
+
     if (publicRoutes.includes(req.path)) {
       return next();
     }
     let userId = null;
 
-    // 디버깅용 로그 추가
-    // console.log('Session data:', req.session);
-
-    // JWT 토큰에서 userId 추출
-    // const token = localStorage.getItem('token');
-    // console.log('token>>>', token);
-    // if (token) {
-    //   try {
-    //     const decoded = jwt.verify(token, 'your_jwt_secret');
-    //     userId = decoded.id;
-    //   } catch (err) {
-    //     console.error('JWT Verification Error:', err.message);
-    //   }
-    // }
-
-    // 세션에서 userId 추출
     if (!userId && req.session.user) {
       userId = req.session.user.id;
     }
 
-    // 인증되지 않은 사용자 처리
     if (!userId) {
       return res.status(404).render('404');
     }
 
-    // 사용자 정보 가져오기
     const user = await User.findOne({
       where: { id: userId },
       attributes: ['nickname', 'profile_image', 'id'],
@@ -58,7 +40,6 @@ const loadUserData = async (req, res, next) => {
       return res.status(404).render('404');
     }
 
-    // 사용자 키워드 정보 가져오기
     const keywords = await Keyword.findAll({
       where: { user_id: userId },
       attributes: ['id', 'keyword', 'user_id'],

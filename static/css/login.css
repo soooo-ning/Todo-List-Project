@@ -419,6 +419,7 @@ form[name='form-todo'].view .todo_key {
 }
 .todo_content li label input[type='text'] {
 }
+.todo_content li label > button.delete-content,
 .todo_content li label input[value='delete'] {
   border: 1px solid #777;
   border-radius: 20px;

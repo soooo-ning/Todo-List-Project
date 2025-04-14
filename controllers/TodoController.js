@@ -1,4 +1,4 @@
-const { Keyword, Todo, TodoContent, User } = require('../models');
+const { Keyword, Todo, TodoContent, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { success, serverError, notFound } = require('../utils/common');
 
@@ -69,6 +69,8 @@ exports.getTodo = async (req, res) => {
 // 투두 수정 API
 // PATCH /todo/api/edit
 exports.editTodo = async (req, res) => {
+  const t = await sequelize.transaction();
+
   try {
     const { id, keyword_id, title, priority, date, contents } = req.body;
 
@@ -80,36 +82,74 @@ exports.editTodo = async (req, res) => {
         date,
         update_date: new Date(),
       },
-      { where: { id } },
+      { where: { id }, transaction: t },
     );
 
     if (!updated) {
+      await t.rollback(); // 실패 시 롤백
       return notFound(res, null, 'Todo를 찾을 수 없습니다.');
     }
 
-    if (contents) {
-      const contentsArray = Array.isArray(contents) ? contents : [contents];
+    // 현재 존재하는 모든 content 가져오기
+    const existingContents = await TodoContent.findAll({
+      where: { todo_id: id },
+      attributes: ['id'],
+      transaction: t,
+    });
 
-      for (const content of contentsArray) {
-        const { id: contentId, content: text, state } = content;
+    // 전송된 contents의 ID만 추출
+    const receivedContentIds = contents
+      .filter((content) => content.id)
+      .map((content) => Number(content.id));
 
-        if (contentId) {
-          await TodoContent.update(
-            { content: text, state: state === 'true' },
-            { where: { id: contentId, todo_id: id } },
-          );
-        } else {
-          await TodoContent.create({
+    // 삭제해야 할 content 찾기 (현재 DOM에 없는 content)
+    const contentIdsToDelete = existingContents
+      .map((content) => content.id)
+      .filter((existingId) => !receivedContentIds.includes(existingId));
+
+    // 삭제된 content 제거
+    if (contentIdsToDelete.length > 0) {
+      await TodoContent.destroy({
+        where: {
+          id: contentIdsToDelete,
+          todo_id: id,
+        },
+        transaction: t,
+      });
+    }
+
+    // 남은 content 업데이트 및 새 content 추가
+    for (const content of contents) {
+      const { id: contentId, content: text, state } = content;
+
+      if (contentId) {
+        // 기존 content 업데이트
+        await TodoContent.update(
+          {
+            content: text,
+            state: Boolean(state),
+          },
+          { where: { id: contentId, todo_id: id }, transaction: t },
+        );
+      } else if (text.trim()) {
+        // 새 content 추가
+        await TodoContent.create(
+          {
             todo_id: id,
             content: text,
-            state: state === 'true',
-          });
-        }
+            state: Boolean(state),
+          },
+          { transaction: t },
+        );
       }
     }
 
+    // 모든 데이터베이스 작업이 성공했으므로 트랜잭션 커밋
+    await t.commit();
+
     success(res, null, 'Todo 업데이트 완료');
   } catch (err) {
+    await t.rollback();
     serverError(res, err);
   }
 };
@@ -206,6 +246,12 @@ exports.weekTodos = async (req, res) => {
         },
       },
       attributes: ['id', 'title', 'date'],
+      include: [
+        {
+          model: TodoContent,
+          attributes: ['content', 'state'],
+        },
+      ],
       order: [['date', 'ASC']],
       raw: false,
     });
