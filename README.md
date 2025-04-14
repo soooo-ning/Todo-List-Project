@@ -89,6 +89,30 @@
 
 <img src="https://github.com/user-attachments/assets/f7aeb4b0-327e-4a2e-86d4-0ccd036fd075" width="1500px;"/><br><br>
 
+## :open_file_folder: Project Structure
+
+```markdown
+📂 Todo-list-project
+├── config        # 설정 파일
+├── controllers   # 로직 및 요청 처리
+├── middlewares   # 미들웨어
+├── migrations
+├── models        # 데이터베이스 모델
+├── routes        # 라우터 정의
+├── db            # 데이터베이스 init 파일
+├── static        # 정적 파일 (CSS, 이미지, JS)
+│   ├── css
+│   ├── font
+│   ├── img
+│   └── uploads   # multer 업로드 파일 저장
+├── utils         # 유틸 함수 (응답 함수)
+└── views         # 템플릿 (HTML, EJS 등)
+│   └── include   # 공통 모듈
+└── app.js        # 서버 초기화 및 API 라우트 연결
+```
+
+<br><br>
+
 ## 💻 Getting Started
 
 > 해당 프로젝트 설치 및 실행 방법
@@ -110,30 +134,6 @@ npm run dev
 
 ```
 npm run start
-```
-
-<br><br>
-
-## :open_file_folder: Project Structure
-
-```markdown
-📂 Todo-list-project
-├── config        # 설정 파일
-├── controllers   # 로직 및 요청 처리
-├── middlewares   # 미들웨어
-├── migrations
-├── models        # 데이터베이스 모델
-├── routes        # 라우터 정의
-├── db            # 데이터베이스 init 파일
-├── static        # 정적 파일 (CSS, 이미지, JS)
-│   ├── css
-│   ├── font
-│   ├── img
-│   └── uploads   # multer 업로드 파일 저장
-├── utils         # 유틸 함수 (응답 함수)
-└── views         # 템플릿 (HTML, EJS 등)
-│   └── include   # 공통 모듈
-└── app.js        # 서버 초기화 및 API 라우트 연결
 ```
 
 <br><br>
