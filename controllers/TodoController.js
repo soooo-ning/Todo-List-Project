@@ -90,19 +90,16 @@ exports.editTodo = async (req, res) => {
       return notFound(res, null, 'Todo를 찾을 수 없습니다.');
     }
 
-    // 현재 존재하는 모든 content 가져오기
     const existingContents = await TodoContent.findAll({
       where: { todo_id: id },
       attributes: ['id'],
       transaction: t,
     });
 
-    // 전송된 contents의 ID만 추출
     const receivedContentIds = contents
       .filter((content) => content.id)
       .map((content) => Number(content.id));
 
-    // 삭제해야 할 content 찾기 (현재 DOM에 없는 content)
     const contentIdsToDelete = existingContents
       .map((content) => content.id)
       .filter((existingId) => !receivedContentIds.includes(existingId));
@@ -123,7 +120,6 @@ exports.editTodo = async (req, res) => {
       const { id: contentId, content: text, state } = content;
 
       if (contentId) {
-        // 기존 content 업데이트
         await TodoContent.update(
           {
             content: text,
@@ -132,7 +128,6 @@ exports.editTodo = async (req, res) => {
           { where: { id: contentId, todo_id: id }, transaction: t },
         );
       } else if (text.trim()) {
-        // 새 content 추가
         await TodoContent.create(
           {
             todo_id: id,
@@ -144,7 +139,6 @@ exports.editTodo = async (req, res) => {
       }
     }
 
-    // 모든 데이터베이스 작업이 성공했으므로 트랜잭션 커밋
     await t.commit();
 
     success(res, null, 'Todo 업데이트 완료');
